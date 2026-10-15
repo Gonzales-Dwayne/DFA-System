@@ -7,7 +7,7 @@
   // DOM Helpers
   const $ = id => document.getElementById(id);
   const input = $('binaryInput'), pop = $('pop');
-  const HINT = 'Enter only 0 and 1.';
+  const HINT = 'Leave the input blank to test the empty string (ε).';
   // Run State
   let str = '', states = [START], frame = 0, timer = null;
 
@@ -106,6 +106,12 @@
       `<li class="${f !== null && f <= n && i === f - 1 ? 'now' : ''}">Step ${i + 1}: δ(${states[i]}, ${c}) = ${states[i + 1]}</li>`);
     if (f !== null && f > n) rules.push(`<li class="${cur === ACCEPT ? 'fin-ok' : 'fin-bad'}">${n ? `Final state: ${cur}` : `ε: stays in ${START}`} → ${verdict(cur)}</li>`);
     $('rules').innerHTML = rules.join('');
+    // Follow the newest step inside each log without moving the whole page.
+    for (const id of ['trace', 'rules']) {
+      const log = $(id);
+      log.scrollTop = f === null || f === 0 ? 0 : log.scrollHeight;
+    }
+    $('path').scrollLeft = f === null || f === 0 ? 0 : $('path').scrollWidth;
 
     // Result Popup
     if (f !== null) renderPop(f);
